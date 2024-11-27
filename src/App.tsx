@@ -13,7 +13,11 @@ function App() {
     total_count: number;
     items: any[];
   } | null>(null);
-  const [repositories, setRepositories] = useState<any[]>([]);
+  const [repositories, setRepositories] = useState<
+    {
+      language: string | null;
+    }[]
+  >([]);
   const [user, setUser] = useState<{
     login: string;
     id: number;
@@ -75,7 +79,7 @@ function App() {
   }
 
   useEffect(() => {
-    const userName = "ThiagoHeckler";
+    const userName = "mendesjar";
     getUser(userName);
     getCommmits(userName);
     getRepositories(userName);
@@ -135,31 +139,55 @@ function App() {
                       </Label>
                     </div>
                   </header>
-                  <h5>
-                    {/* {repositories.length &&
-                      repositories.reduce(
-                        (e, t) =>
-                          t.language &&
-                          (e[t.language] = (e[t.language] || 0) + 1)
-                      )} */}
-                  </h5>
                 </div>
-                <div className="badges flex gap-x-2 flex-wrap">
-                  <div className="w-max">
-                    <Badge
-                      variant="outline"
-                      className="text-[0.6rem] rounded-full capitalize"
+                <main>
+                  <h1 className="bg-gradient-to-r from-green-500 to-green-300 text-transparent bg-clip-text font-black text-4xl text-wrap w-full break-words capitalize">Developing dreams</h1>
+                </main>
+                <div>
+                  <div
+                    id="languages"
+                    className="flex flex-col gap-y-1 mb-2 text-[0.6rem] text-primary font-extrabold"
+                  >
+                    Top languages
+                    <Label
+                      htmlFor="languages"
+                      className="text-muted-foreground"
                     >
-                      {user?.public_repos} repositories
-                    </Badge>
+                      {Object.entries(
+                        repositories.reduce<{ [key: string]: number }>(
+                          (acc, repo) => {
+                            if (repo.language) {
+                              acc[repo.language] =
+                                (acc[repo.language] || 0) + 1;
+                            }
+                            return acc;
+                          },
+                          {}
+                        )
+                      )
+                        .sort((a: any, b: any) => b[1] - a[1])
+                        .slice(0, 3)
+                        .map((entry) => entry[0])
+                        .join(", ")}
+                    </Label>
                   </div>
-                  <div className="w-max">
-                    <Badge
-                      variant="outline"
-                      className="text-[0.6rem] rounded-full capitalize"
-                    >
-                      {user?.public_gists} gists
-                    </Badge>
+                  <div className="badges flex gap-x-2 flex-wrap">
+                    <div className="w-max">
+                      <Badge
+                        variant="outline"
+                        className="text-[0.6rem] rounded-full capitalize"
+                      >
+                        {user?.public_repos} repositories
+                      </Badge>
+                    </div>
+                    <div className="w-max">
+                      <Badge
+                        variant="outline"
+                        className="text-[0.6rem] rounded-full capitalize"
+                      >
+                        {user?.public_gists} gists
+                      </Badge>
+                    </div>
                   </div>
                 </div>
               </main>
