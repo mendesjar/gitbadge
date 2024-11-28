@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 import { Label } from "./components/ui/label";
-import { ArrowUpRight, Circle, Earth } from "lucide-react";
+import { Circle, Earth } from "lucide-react";
 import { Badge } from "./components/ui/badge";
-import { Button } from "./components/ui/button";
 import { formatarData } from "./utils/format-date.utils";
+import logomarca from "../public/gm.svg";
 
 const baseUrl = "https://api.github.com";
 
@@ -212,18 +212,7 @@ function App() {
                     </Label>
                   </div>
                 )}
-                <Button variant="outline" className="h-7 rounded-full">
-                  <Label
-                    htmlFor="share"
-                    className="text-[0.6rem] text-blue-700 font-black pointer-events-none"
-                  >
-                    Share
-                  </Label>
-                  <ArrowUpRight
-                    id="share"
-                    className="stroke-2 size-4 text-muted-foreground"
-                  />
-                </Button>
+                <img src={logomarca} className="h-1/3" alt="logo" />
               </div>
             </div>
           </div>
