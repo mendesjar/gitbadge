@@ -1,14 +1,25 @@
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 import { Label } from "./components/ui/label";
 import { Circle, Earth } from "lucide-react";
 import { Badge } from "./components/ui/badge";
 import { formatarData } from "./utils/format-date.utils";
-import logomarca from "../public/gm.svg";
+import logomarca from "/public/gm.svg";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "./components/ui/drawer";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
 
 const baseUrl = "https://api.github.com";
 
 function App() {
+  const [userName, setUserName] = useState("");
+  const [openDrawer, setOpenDrawer] = useState(true);
   const [commits, setCommits] = useState<{
     total_count: number;
     items: any[];
@@ -79,11 +90,20 @@ function App() {
   }
 
   useEffect(() => {
-    const userName = "mendesjar";
-    getUser(userName);
-    getCommmits(userName);
-    getRepositories(userName);
-  }, []);
+    if (!openDrawer && !userName) {
+      setOpenDrawer(true);
+    }
+  }, [openDrawer]);
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (userName) {
+      getUser(userName);
+      getCommmits(userName);
+      getRepositories(userName);
+    }
+    setOpenDrawer(false);
+  }
 
   return (
     <>
@@ -91,111 +111,115 @@ function App() {
       <div className="relative z-20 w-full h-dvh">
         <div className="flex justify-center w-screen h-full">
           <div className="flex flex-col items-center">
-            <div className="z-30 w-8 h-14 bg-blue-800" />
+            <div className="z-30 w-8 h-14 bg-green-800" />
             <div className="z-30 w-12 h-8 bg-gray-900 rounded-md" />
             <div className="z-30 w-5 h-6 bg-gray-900 rounded-b-sm" />
             <div className="z-20 w-12 h-4 bg-white border-4 border-gray-200 rounded-full -m-2" />
             <div className="z-10 flex flex-col w-[22rem] h-[32rem] bg-muted border-2 border-gray-200 rounded-3xl -m-4 p-4 pt-9 pb-0">
               <main className="bg-background w-full h-full flex flex-col justify-between p-4 rounded-xl">
-                <div className="flex flex-col gap-y-4">
-                  <div className="w-full h-1 bg-gradient-to-r from-green-500 to-green-300 rounded-full" />
-                  <header className="flex items-end justify-between w-full">
-                    <div className="flex items-center gap-x-2">
-                      <Avatar id="avatar">
-                        <AvatarImage src={user?.avatar_url} />
-                        <AvatarFallback>{user?.login}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col">
+                {user?.id && (
+                  <>
+                    <div className="flex flex-col gap-y-4">
+                      <div className="w-full h-1 bg-gradient-to-r from-green-500 to-green-300 rounded-full" />
+                      <header className="flex items-end justify-between w-full">
+                        <div className="flex items-center gap-x-2">
+                          <Avatar id="avatar">
+                            <AvatarImage src={user?.avatar_url} />
+                            <AvatarFallback>{user?.login}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col">
+                            <Label
+                              htmlFor="avatar"
+                              className="text-[0.8rem] font-bold text-primary"
+                            >
+                              {user?.name}
+                            </Label>
+                            <Label
+                              htmlFor="avatar"
+                              className="text-[0.6rem] leading-3 text-muted-foreground w-28 max-h-6 overflow-hidden text-ellipsis"
+                            >
+                              {user?.bio}
+                            </Label>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <Circle
+                            id="commits"
+                            className="w-2 h-2 fill-green-500 animate-pulse stroke-none mb-1"
+                          />
+                          <Label
+                            htmlFor="commits"
+                            className="text-[0.6rem] text-muted-foreground capitalize"
+                          >
+                            commits (30d)
+                          </Label>
+                          <Label
+                            htmlFor="commits"
+                            className="text-[0.6rem] font-bold text-primary capitalize"
+                          >
+                            {commits?.total_count || 0} commits
+                          </Label>
+                        </div>
+                      </header>
+                    </div>
+                    <main>
+                      <p className="text-[0.6rem]">@{user?.login}</p>
+                      <h1 className="bg-gradient-to-r from-green-500 to-green-300 text-transparent bg-clip-text font-black text-4xl text-wrap w-full break-words capitalize">
+                        Developing dreams
+                      </h1>
+                    </main>
+                    <div className="text-primary">
+                      <Label className="text-[0.8rem] font-extrabold text-muted-foreground">
+                        Code: #{Math.floor(Math.random() * 10000)}
+                      </Label>
+                      <div
+                        id="languages"
+                        className="flex flex-col text-[0.6rem] gap-y-1 my-3 font-extrabold"
+                      >
+                        Top languages
                         <Label
-                          htmlFor="avatar"
-                          className="text-[0.8rem] font-bold text-primary"
+                          htmlFor="languages"
+                          className="text-muted-foreground"
                         >
-                          {user?.name}
-                        </Label>
-                        <Label
-                          htmlFor="avatar"
-                          className="text-[0.6rem] leading-3 text-muted-foreground w-28 max-h-6 overflow-hidden text-ellipsis"
-                        >
-                          {user?.bio}
+                          {Object.entries(
+                            repositories.reduce<{ [key: string]: number }>(
+                              (acc, repo) => {
+                                if (repo.language) {
+                                  acc[repo.language] =
+                                    (acc[repo.language] || 0) + 1;
+                                }
+                                return acc;
+                              },
+                              {}
+                            )
+                          )
+                            .sort((a, b) => b[1] - a[1])
+                            .slice(0, 3)
+                            .map((entry) => entry[0])
+                            .join(", ")}
                         </Label>
                       </div>
+                      <div className="badges flex gap-x-2 flex-wrap">
+                        <div className="w-max">
+                          <Badge
+                            variant="outline"
+                            className="text-[0.6rem] rounded-full capitalize"
+                          >
+                            {user?.public_repos} repositories
+                          </Badge>
+                        </div>
+                        <div className="w-max">
+                          <Badge
+                            variant="outline"
+                            className="text-[0.6rem] rounded-full capitalize"
+                          >
+                            {user?.public_gists} gists
+                          </Badge>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex flex-col items-end">
-                      <Circle
-                        id="commits"
-                        className="w-2 h-2 fill-green-500 animate-pulse stroke-none mb-1"
-                      />
-                      <Label
-                        htmlFor="commits"
-                        className="text-[0.6rem] text-muted-foreground capitalize"
-                      >
-                        commits (30d)
-                      </Label>
-                      <Label
-                        htmlFor="commits"
-                        className="text-[0.6rem] font-bold text-primary capitalize"
-                      >
-                        {commits?.total_count || 0} commits
-                      </Label>
-                    </div>
-                  </header>
-                </div>
-                <main>
-                  <p className="text-[0.6rem]">@{user?.login}</p>
-                  <h1 className="bg-gradient-to-r from-green-500 to-green-300 text-transparent bg-clip-text font-black text-4xl text-wrap w-full break-words capitalize">
-                    Developing dreams
-                  </h1>
-                </main>
-                <div className="text-primary">
-                  <Label className="text-[0.8rem] font-extrabold text-muted-foreground">
-                    Code: #{Math.floor(Math.random() * 10000)}
-                  </Label>
-                  <div
-                    id="languages"
-                    className="flex flex-col text-[0.6rem] gap-y-1 my-3 font-extrabold"
-                  >
-                    Top languages
-                    <Label
-                      htmlFor="languages"
-                      className="text-muted-foreground"
-                    >
-                      {Object.entries(
-                        repositories.reduce<{ [key: string]: number }>(
-                          (acc, repo) => {
-                            if (repo.language) {
-                              acc[repo.language] =
-                                (acc[repo.language] || 0) + 1;
-                            }
-                            return acc;
-                          },
-                          {}
-                        )
-                      )
-                        .sort((a, b) => b[1] - a[1])
-                        .slice(0, 3)
-                        .map((entry) => entry[0])
-                        .join(", ")}
-                    </Label>
-                  </div>
-                  <div className="badges flex gap-x-2 flex-wrap">
-                    <div className="w-max">
-                      <Badge
-                        variant="outline"
-                        className="text-[0.6rem] rounded-full capitalize"
-                      >
-                        {user?.public_repos} repositories
-                      </Badge>
-                    </div>
-                    <div className="w-max">
-                      <Badge
-                        variant="outline"
-                        className="text-[0.6rem] rounded-full capitalize"
-                      >
-                        {user?.public_gists} gists
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
+                  </>
+                )}
               </main>
               <div className="flex items-center justify-between w-full h-12 px-4">
                 {user?.location && (
@@ -218,6 +242,28 @@ function App() {
           </div>
         </div>
       </div>
+      <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
+        <DrawerContent>
+          <div className="mx-auto w-full max-w-sm">
+            <DrawerHeader>
+              <DrawerTitle>Username</DrawerTitle>
+              <DrawerDescription>Enter GitHub username</DrawerDescription>
+            </DrawerHeader>
+            <div className="p-4 pb-12">
+              <form onSubmit={(e) => handleSubmit(e)}>
+                <div className="flex w-full max-w-sm items-center space-x-2">
+                  <Input
+                    type="text"
+                    placeholder="Enter Username"
+                    onChange={(e) => setUserName(e.target.value)}
+                  />
+                  <Button type="submit">Enter</Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }
