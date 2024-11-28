@@ -141,12 +141,18 @@ function App() {
                   </header>
                 </div>
                 <main>
-                  <h1 className="bg-gradient-to-r from-green-500 to-green-300 text-transparent bg-clip-text font-black text-4xl text-wrap w-full break-words capitalize">Developing dreams</h1>
+                  <p className="text-[0.6rem]">@{user?.login}</p>
+                  <h1 className="bg-gradient-to-r from-green-500 to-green-300 text-transparent bg-clip-text font-black text-4xl text-wrap w-full break-words capitalize">
+                    Developing dreams
+                  </h1>
                 </main>
-                <div>
+                <div className="text-primary">
+                  <Label className="text-[0.8rem] font-extrabold text-muted-foreground">
+                    Code: #{Math.floor(Math.random() * 10000)}
+                  </Label>
                   <div
                     id="languages"
-                    className="flex flex-col gap-y-1 mb-2 text-[0.6rem] text-primary font-extrabold"
+                    className="flex flex-col text-[0.6rem] gap-y-1 my-3 font-extrabold"
                   >
                     Top languages
                     <Label
@@ -165,7 +171,7 @@ function App() {
                           {}
                         )
                       )
-                        .sort((a: any, b: any) => b[1] - a[1])
+                        .sort((a, b) => b[1] - a[1])
                         .slice(0, 3)
                         .map((entry) => entry[0])
                         .join(", ")}
