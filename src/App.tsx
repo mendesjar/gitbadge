@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 import { Label } from "./components/ui/label";
-import { Circle, Earth } from "lucide-react";
+import { Circle, Earth, Search } from "lucide-react";
 import { Badge } from "./components/ui/badge";
 import { formatarData } from "./utils/format-date.utils";
 import logomarca from "/public/gm.svg";
@@ -90,7 +90,7 @@ function App() {
   }
 
   useEffect(() => {
-    if (!openDrawer && !userName) {
+    if (!openDrawer && !userName && !user?.id) {
       setOpenDrawer(true);
     }
   }, [openDrawer]);
@@ -170,7 +170,7 @@ function App() {
                     </main>
                     <div className="text-primary">
                       <Label className="text-[0.8rem] font-extrabold text-muted-foreground">
-                        Code: #{Math.floor(Math.random() * 10000)}
+                        Code: {user.id}
                       </Label>
                       <div
                         id="languages"
@@ -254,6 +254,7 @@ function App() {
                 <div className="flex w-full max-w-sm items-center space-x-2">
                   <Input
                     type="text"
+                    autoFocus
                     placeholder="Enter Username"
                     onChange={(e) => setUserName(e.target.value)}
                   />
@@ -264,6 +265,17 @@ function App() {
           </div>
         </DrawerContent>
       </Drawer>
+      <Button
+        variant="outline"
+        size="icon"
+        className="z-40 fixed bottom-5 right-5 p-5 rounded-full"
+        onClick={() => {
+          setUserName("");
+          setOpenDrawer(true);
+        }}
+      >
+        <Search className="stroke-[3] scale-105" />
+      </Button>
     </>
   );
 }
