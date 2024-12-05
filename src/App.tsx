@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 import { Label } from "./components/ui/label";
-import { Circle, Earth, Search } from "lucide-react";
+import { Circle, Earth, Moon, Search, Sun } from "lucide-react";
 import { Badge } from "./components/ui/badge";
 import { formatarData } from "./utils/format-date.utils";
 import logomarca from "/public/gm.svg";
@@ -20,6 +20,7 @@ const baseUrl = "https://api.github.com";
 function App() {
   const [userName, setUserName] = useState("");
   const [openDrawer, setOpenDrawer] = useState(true);
+  const [theme, setTheme] = useState<"dark" | "light">("light");
   const [commits, setCommits] = useState<{
     total_count: number;
     items: any[];
@@ -105,6 +106,33 @@ function App() {
     setOpenDrawer(false);
   }
 
+  function handleChangeTheme() {
+    if (localStorage.theme === "dark" || !("theme" in localStorage)) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+    if (localStorage.theme === "dark") {
+      localStorage.theme = "light";
+      setTheme("light");
+    } else {
+      localStorage.theme = "dark";
+      setTheme("dark");
+    }
+  }
+
+  const keyDownHandler = (e: KeyboardEvent) => {
+    if (e.ctrlKey && e.key === "k") {
+      setUserName("");
+      setOpenDrawer(true);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", keyDownHandler);
+  });
+
   return (
     <>
       <div className="z-10 fixed -right-16 top-64 w-[calc(100vw+10rem)] h-[calc(100vw+10rem)] bg-violet-800 blur-[10rem] opacity-15 rounded-full" />
@@ -112,15 +140,15 @@ function App() {
         <div className="flex justify-center w-screen h-full">
           <div className="flex flex-col items-center">
             <div className="z-30 w-8 h-14 bg-green-800" />
-            <div className="z-30 w-12 h-8 bg-gray-900 rounded-md" />
-            <div className="z-30 w-5 h-6 bg-gray-900 rounded-b-sm" />
-            <div className="z-20 w-12 h-4 bg-white border-4 border-gray-200 rounded-full -m-2" />
-            <div className="z-10 flex flex-col w-[22rem] h-[32rem] bg-muted border-2 border-gray-200 rounded-3xl -m-4 p-4 pt-9 pb-0">
+            <div className="z-30 w-12 h-8 bg-gray-900 dark:bg-gray-600 rounded-md" />
+            <div className="z-30 w-5 h-6 bg-gray-900 dark:bg-gray-600 rounded-b-sm" />
+            <div className="z-20 w-12 h-4 bg-background border-4 border-gray-200 dark:border-gray-600 rounded-full -m-2" />
+            <div className="z-10 flex flex-col w-[22rem] h-[32rem] bg-muted border-2 border-gray-200 dark:border-gray-600 rounded-3xl -m-4 p-4 pt-9 pb-0">
               <main className="bg-background w-full h-full flex flex-col justify-between p-4 rounded-xl">
                 {user?.id && (
                   <>
                     <div className="flex flex-col gap-y-4">
-                      <div className="w-full h-1 bg-gradient-to-r from-green-500 to-green-300 rounded-full" />
+                      <div className="w-full h-1 bg-gradient-to-r from-green-500 to-green-300 dark:from-green-300 dark:to-green-100 rounded-full" />
                       <header className="flex items-end justify-between w-full">
                         <div className="flex items-center gap-x-2">
                           <Avatar id="avatar">
@@ -145,7 +173,7 @@ function App() {
                         <div className="flex flex-col items-end">
                           <Circle
                             id="commits"
-                            className="w-2 h-2 fill-green-500 animate-pulse stroke-none mb-1"
+                            className="w-2 h-2 fill-green-500 dark:fill-green-300 animate-pulse stroke-none mb-1"
                           />
                           <Label
                             htmlFor="commits"
@@ -164,7 +192,7 @@ function App() {
                     </div>
                     <main>
                       <p className="text-[0.6rem]">@{user?.login}</p>
-                      <h1 className="bg-gradient-to-r from-green-500 to-green-300 text-transparent bg-clip-text font-black text-4xl text-wrap w-full break-words capitalize">
+                      <h1 className="bg-gradient-to-r from-green-500 to-green-300 dark:from-green-300 dark:to-green-100 text-transparent bg-clip-text font-black text-4xl text-wrap w-full break-words capitalize">
                         Developing dreams
                       </h1>
                     </main>
@@ -236,7 +264,11 @@ function App() {
                     </Label>
                   </div>
                 )}
-                <img src={logomarca} className="h-1/3" alt="logo" />
+                <img
+                  src={logomarca}
+                  className="h-1/3 dark:brightness-200"
+                  alt="logo"
+                />
               </div>
             </div>
           </div>
@@ -268,12 +300,24 @@ function App() {
       <Button
         variant="outline"
         size="icon"
-        className="z-40 fixed bottom-5 right-5 p-5 rounded-full"
+        className="z-40 fixed bottom-5 left-5"
+        onClick={() => handleChangeTheme()}
+      >
+        {theme === "dark" ? (
+          <Moon className="stroke-[3]" />
+        ) : (
+          <Sun className="stroke-[3]" />
+        )}
+      </Button>
+      <Button
+        variant="outline"
+        className="z-40 fixed bottom-5 right-5"
         onClick={() => {
           setUserName("");
           setOpenDrawer(true);
         }}
       >
+        <span className="hidden md:block">ctrl + k</span>{" "}
         <Search className="stroke-[3] scale-105" />
       </Button>
     </>
