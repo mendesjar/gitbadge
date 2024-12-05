@@ -139,9 +139,9 @@ function App() {
       <div className="relative z-20 w-full h-dvh">
         <div className="flex justify-center w-screen h-full">
           <div className="flex flex-col items-center">
-            <div className="z-30 w-8 h-14 bg-green-800" />
-            <div className="z-30 w-12 h-8 bg-gray-900 dark:bg-gray-600 rounded-md" />
-            <div className="z-30 w-5 h-6 bg-gray-900 dark:bg-gray-600 rounded-b-sm" />
+            <div className="z-30 w-8 h-14 bg-green-800 dark:bg-green-300" />
+            <div className="z-30 w-12 h-8 bg-gray-900 dark:bg-gray-400 rounded-md" />
+            <div className="z-30 w-5 h-6 bg-gray-900 dark:bg-gray-400 rounded-b-sm" />
             <div className="z-20 w-12 h-4 bg-background border-4 border-gray-200 dark:border-gray-600 rounded-full -m-2" />
             <div className="z-10 flex flex-col w-[22rem] h-[32rem] bg-muted border-2 border-gray-200 dark:border-gray-600 rounded-3xl -m-4 p-4 pt-9 pb-0">
               <main className="bg-background w-full h-full flex flex-col justify-between p-4 rounded-xl">
