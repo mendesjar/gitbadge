@@ -311,7 +311,7 @@ function App() {
       </Button>
       <Button
         variant="outline"
-        className="z-40 fixed bottom-5 right-5"
+        className="z-40 w-9 h-9 md:w-auto fixed bottom-5 right-5 font-bold"
         onClick={() => {
           setUserName("");
           setOpenDrawer(true);
