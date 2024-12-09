@@ -4,7 +4,7 @@ import { Label } from "./components/ui/label";
 import { Circle, Earth, Moon, Search, Sun } from "lucide-react";
 import { Badge } from "./components/ui/badge";
 import { formatarData } from "./utils/format-date.utils";
-import logomarca from "/public/gm.svg";
+import logomarca from "/gm.svg";
 import {
   Drawer,
   DrawerContent,
