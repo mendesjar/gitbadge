@@ -14,13 +14,14 @@ import {
 } from "./components/ui/drawer";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
+import { useTheme } from "./components/theme-provider";
 
 const baseUrl = "https://api.github.com";
 
 function App() {
   const [userName, setUserName] = useState("");
   const [openDrawer, setOpenDrawer] = useState(true);
-  const [theme, setTheme] = useState<"dark" | "light">("light");
+  const { theme, setTheme } = useTheme();
   const [commits, setCommits] = useState<{
     total_count: number;
     items: any[];
@@ -106,18 +107,11 @@ function App() {
     setOpenDrawer(false);
   }
 
-  function handleChangeTheme() {
-    if (localStorage.theme === "dark" || !("theme" in localStorage)) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-
-    if (localStorage.theme === "dark") {
-      localStorage.theme = "light";
+  function handleChangeTheme(system = false) {
+    if (system) return setTheme("system");
+    if (theme === "dark") {
       setTheme("light");
     } else {
-      localStorage.theme = "dark";
       setTheme("dark");
     }
   }
@@ -302,6 +296,7 @@ function App() {
         size="icon"
         className="z-40 fixed bottom-5 left-5"
         onClick={() => handleChangeTheme()}
+        onDoubleClick={() => handleChangeTheme(true)}
       >
         {theme === "dark" ? (
           <Moon className="stroke-[3]" />
