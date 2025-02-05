@@ -15,7 +15,7 @@ import {
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { useTheme } from "./components/theme-provider";
-import { IUser } from "./interfaces";
+import { ICommits, IRepositories, IUser } from "./interfaces";
 
 const baseUrl = "https://api.github.com";
 
@@ -23,15 +23,8 @@ function App() {
   const [userName, setUserName] = useState("");
   const [openDrawer, setOpenDrawer] = useState(true);
   const { theme, setTheme } = useTheme();
-  const [commits, setCommits] = useState<{
-    total_count: number;
-    items: any[];
-  } | null>(null);
-  const [repositories, setRepositories] = useState<
-    {
-      language: string | null;
-    }[]
-  >([]);
+  const [commits, setCommits] = useState<ICommits | null>(null);
+  const [repositories, setRepositories] = useState<IRepositories[]>([]);
   const [user, setUser] = useState<IUser | null>(null);
 
   async function getUser(username: string): Promise<IUser> {
@@ -41,7 +34,7 @@ function App() {
     return apiResult;
   }
 
-  async function getCommmits(username: string) {
+  async function getCommmits(username: string): Promise<ICommits> {
     const date = formatarData();
     const apiData = await fetch(
       `${baseUrl}/search/commits?q=author:${username}+committer-date:%3E=${date}`
@@ -51,7 +44,7 @@ function App() {
     return apiResult;
   }
 
-  async function getRepositories(username: string) {
+  async function getRepositories(username: string): Promise<IRepositories> {
     const apiData = await fetch(
       `${baseUrl}/users/${username}/repos?per_page=100&sort=pushed`
     );
@@ -66,7 +59,7 @@ function App() {
     }
   }, [openDrawer]);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: FormEvent<HTMLFormElement>): void {
     e.preventDefault();
     if (userName) {
       getUser(userName);
@@ -76,7 +69,7 @@ function App() {
     setOpenDrawer(false);
   }
 
-  function handleChangeTheme(system = false) {
+  function handleChangeTheme(system = false): void {
     if (system) return setTheme("system");
     if (theme === "dark") {
       setTheme("light");
