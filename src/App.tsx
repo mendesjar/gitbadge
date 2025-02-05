@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 import { Label } from "./components/ui/label";
 import { Circle, Earth, Moon, Search, Sun } from "lucide-react";
 import { Badge } from "./components/ui/badge";
-import { formatarData } from "./utils/format-date.utils";
+import { formatarData } from "./utils";
 import logomarca from "/gm.svg";
 import {
   Drawer,
@@ -34,7 +34,7 @@ function App() {
   >([]);
   const [user, setUser] = useState<IUser | null>(null);
 
-  async function getUser(username: string) {
+  async function getUser(username: string): Promise<IUser> {
     const apiData = await fetch(`${baseUrl}/users/${username}`);
     const apiResult = await apiData.json();
     setUser(apiResult);
