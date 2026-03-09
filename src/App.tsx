@@ -37,7 +37,7 @@ function App() {
   async function getCommmits(username: string): Promise<ICommits> {
     const date = formatarData();
     const apiData = await fetch(
-      `${baseUrl}/search/commits?q=author:${username}+committer-date:%3E=${date}`
+      `${baseUrl}/search/commits?q=author:${username}+committer-date:%3E=${date}`,
     );
     const apiResult = await apiData.json();
     setCommits(apiResult);
@@ -46,7 +46,7 @@ function App() {
 
   async function getRepositories(username: string): Promise<IRepositories> {
     const apiData = await fetch(
-      `${baseUrl}/users/${username}/repos?per_page=100&sort=pushed`
+      `${baseUrl}/users/${username}/repos?per_page=100&sort=pushed`,
     );
     const apiResult = await apiData.json();
     setRepositories(apiResult);
@@ -78,16 +78,22 @@ function App() {
     }
   }
 
-  const keyDownHandler = (e: KeyboardEvent) => {
-    if (e.ctrlKey && e.key === "k") {
-      setUserName("");
-      setOpenDrawer(true);
-    }
-  };
-
   useEffect(() => {
-    window.addEventListener("keydown", keyDownHandler);
-  });
+    const isMac =
+      typeof navigator !== "undefined" && navigator.userAgent.includes("Mac");
+
+    const handler = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      const modifierPressed = isMac ? e.metaKey : e.ctrlKey;
+      if (modifierPressed && key === "k") {
+        setUserName("");
+        setOpenDrawer(true);
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   return (
     <>
@@ -174,8 +180,8 @@ function App() {
                                 }
                                 return acc;
                               },
-                              {}
-                            )
+                              {},
+                            ),
                           )
                             .sort((a, b) => b[1] - a[1])
                             .slice(0, 3)
