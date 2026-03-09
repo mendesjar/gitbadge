@@ -86,6 +86,7 @@ function App() {
       const key = e.key.toLowerCase();
       const modifierPressed = isMac ? e.metaKey : e.ctrlKey;
       if (modifierPressed && key === "k") {
+        e.preventDefault();
         setUserName("");
         setOpenDrawer(true);
       }
