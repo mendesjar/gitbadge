@@ -83,6 +83,7 @@ function App() {
       typeof navigator !== "undefined" && navigator.userAgent.includes("Mac");
 
     const handler = (e: KeyboardEvent) => {
+      e.preventDefault();
       const key = e.key.toLowerCase();
       const modifierPressed = isMac ? e.metaKey : e.ctrlKey;
       if (modifierPressed && key === "k") {
