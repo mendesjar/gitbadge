@@ -18,6 +18,8 @@ import { useTheme } from "./components/theme-provider";
 import { ICommits, IRepositories, IUser } from "./interfaces";
 
 const baseUrl = "https://api.github.com";
+const IS_MAC =
+  typeof navigator !== "undefined" && navigator.userAgent.includes("Mac");
 
 function App() {
   const [userName, setUserName] = useState("");
@@ -79,12 +81,9 @@ function App() {
   }
 
   useEffect(() => {
-    const isMac =
-      typeof navigator !== "undefined" && navigator.userAgent.includes("Mac");
-
     const handler = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
-      const modifierPressed = isMac ? e.metaKey : e.ctrlKey;
+      const modifierPressed = IS_MAC ? e.metaKey : e.ctrlKey;
       if (modifierPressed && key === "k") {
         e.preventDefault();
         setUserName("");
@@ -275,14 +274,16 @@ function App() {
       </Button>
       <Button
         variant="outline"
-        className="z-40 w-9 h-9 md:w-auto fixed bottom-5 right-5 font-bold"
+        className="z-40 md:w-auto fixed bottom-5 right-5 pr-1.5 pl-3"
         onClick={() => {
           setUserName("");
           setOpenDrawer(true);
         }}
       >
-        <span className="hidden md:block">ctrl + k</span>{" "}
-        <Search className="stroke-[3] scale-105" />
+        <Search className="stroke scale-105" />
+        <span className="hidden md:block">
+          <Badge variant="outline">{IS_MAC ? "⌘" : "ctrl"} + k</Badge>
+        </span>
       </Button>
     </>
   );
